@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import FileModel
+from .models import FileModel
 
 class StoredFileListSerializer(serializers.ModelSerializer):
     file_size_in_mb = serializers.SerializerMethodField()
@@ -17,10 +17,11 @@ class StoredFileListSerializer(serializers.ModelSerializer):
 
 class StoreFileSerializer(serializers.ModelSerializer):
     file_url = serializers.SerializerMethodField()
+    file_size_in_mb = serializers.SerializerMethodField()
     
     class Meta:
         model = FileModel
-        fields = ['owner', 'file', 'file_url', 'size']
+        fields = ['owner', 'file', 'file_url', 'file_size_in_mb']
         read_only_fields = ['owner', 'size']
         extra_kwargs = {
             'file': {'write_only': True},
@@ -41,3 +42,28 @@ class StoreFileSerializer(serializers.ModelSerializer):
     
     def get_file_url(self, obj):
         return obj.file_url
+    
+    def get_file_size_in_mb(self, obj):
+        return obj.file_size_in_mb
+
+
+class ShareFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileModel
+        fields = ['id', 'shares_with']
+
+
+class ShareFileListSerializer(serializers.ModelSerializer):
+    file_size_in_mb = serializers.SerializerMethodField()
+    file_url = serializers.SerializerMethodField()
+    owner = serializers.StringRelatedField()
+
+    class Meta:
+        model = FileModel
+        fields = ['id', 'owner', 'file_url', 'file_size_in_mb']
+
+    def get_file_url(self, obj):
+        return obj.file_url
+
+    def get_file_size_in_mb(self, obj):
+        return obj.file_size_in_mb

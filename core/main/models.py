@@ -1,7 +1,14 @@
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 class FileModel(models.Model):
     owner = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE)
+    shares_with = models.ManyToManyField(
+        "accounts.Profile",
+        related_name="shared_files",
+        blank=True,
+    )
     file = models.FileField(upload_to='user_uploads/')
     size = models.PositiveBigIntegerField(blank=True, null=True)
 
@@ -22,3 +29,8 @@ class FileModel(models.Model):
     def file_size_in_mb(self):
         size_in_mb = self.size / (1024 * 1024)
         return f'{size_in_mb:.3f} MB'
+    
+@receiver(post_delete, sender=FileModel)
+def delete_file_from_storage(sender, instance, **kwargs):
+    if instance.file:
+        instance.file.delete(save=False)

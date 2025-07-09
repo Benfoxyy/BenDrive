@@ -9,7 +9,7 @@ from .serializers import (
     CustomTokenObtainPairSerializer,
     MeSerializer
 )
-from ..models import Profile
+from .models import Profile
 
 
 class RegistrationApiView(generics.GenericAPIView):
