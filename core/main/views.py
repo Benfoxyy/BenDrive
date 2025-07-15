@@ -2,11 +2,12 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from accounts.models import Profile
 from .serializers import StoredFileListSerializer, StoreFileSerializer, ShareFileListSerializer
 from .models import FileModel
-from accounts.models import Profile
+from .tasks import send_email_task
 
-class StoredFileListView(generics.ListAPIView):
+class MyDriveListView(generics.ListAPIView):
     serializer_class = StoredFileListSerializer
     queryset = FileModel.objects.all()
     permission_classes = [IsAuthenticated]
@@ -47,16 +48,16 @@ class ShareAddFileView(APIView):
         if not isinstance(shares_with_emails, list) or not shares_with_emails:
             return Response({"detail": "shares_with must be a non-empty list of user IDs."}, status=400)
 
-        user = request.user
-
         # Fetch file and check ownership
         try:
-            file_obj = FileModel.objects.get(id=obj_id, owner=user.user_profile)
+            file_obj = FileModel.objects.get(id=obj_id)
         except FileModel.DoesNotExist:
             return Response({"detail": "File not found."}, status=404)
+        
+        user = file_obj.owner
 
         # Remove self if owner accidentally adds themself
-        shares_with_emails = [email for email in shares_with_emails if email != user.email]
+        shares_with_emails = [email for email in shares_with_emails if email != user]
 
         # Fetch all valid profile objects
         profiles = Profile.objects.filter(user__email__in=shares_with_emails)
@@ -66,6 +67,13 @@ class ShareAddFileView(APIView):
 
         # Share the file
         file_obj.shares_with.add(*profiles)
+        
+        send_email_task.delay(
+        subject='Hello from BenDrive',
+        message=f'{user} shared a document in your BenDrive account!',
+        recipient_list=shares_with_emails,
+        from_email='benxfoxy@gmail.com'
+    )
 
         return Response({"detail": "File shared successfully."}, status=200)
 

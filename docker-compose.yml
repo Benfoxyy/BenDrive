@@ -47,4 +47,25 @@ services:
     restart: always
     depends_on:
       - db
+      - redis
       - minio
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: celery -A core worker --loglevel=info
+    restart: always
+    volumes:
+      - ./core:/app
+    depends_on:
+      - db
+      - redis
+      - backend

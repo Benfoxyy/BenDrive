@@ -146,6 +146,15 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=8),
 }
 
+CELERY_BROKER_URL = "redis://redis:6379/1"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "benxfoxy@gmail.com"
+EMAIL_HOST_PASSWORD = "htgktzdvdsqqmbna"
+
 # -------------------------
 # ✅ MEDIA FILES (MinIO)
 # -------------------------
