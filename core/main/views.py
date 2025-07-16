@@ -3,9 +3,21 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from accounts.models import Profile
-from .serializers import StoredFileListSerializer, StoreFileSerializer, ShareFileListSerializer
+from django.db.models import Q
+from .serializers import StoredFileListSerializer, FileSerializer, ShareFileListSerializer
 from .models import FileModel
 from .tasks import send_email_task
+
+class FileListView(generics.ListAPIView):
+    serializer_class = FileSerializer
+    queryset = FileModel.objects.all()
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user.user_profile
+        qs = qs.filter(Q(owner=user) | Q(shares_with=user))
+        return qs
 
 class MyDriveListView(generics.ListAPIView):
     serializer_class = StoredFileListSerializer
@@ -18,7 +30,7 @@ class MyDriveListView(generics.ListAPIView):
         return qs
 
 class StoreFileView(generics.CreateAPIView):
-    serializer_class = StoreFileSerializer
+    serializer_class = FileSerializer
     queryset = FileModel.objects.all()
     permission_classes = [IsAuthenticated]
 
@@ -57,7 +69,7 @@ class ShareAddFileView(APIView):
         user = file_obj.owner
 
         # Remove self if owner accidentally adds themself
-        shares_with_emails = [email for email in shares_with_emails if email != user]
+        shares_with_emails = [email for email in shares_with_emails if email != user.user.email]
 
         # Fetch all valid profile objects
         profiles = Profile.objects.filter(user__email__in=shares_with_emails)
@@ -90,7 +102,7 @@ class ShareRemoveFileView(APIView):
         if not isinstance(shares_with_emails, list) or not shares_with_emails:
             return Response({"detail": "shares_with must be a non-empty list of user IDs."}, status=400)
 
-        user = request.user
+        user = file_obj.owner
 
         # Fetch file and check ownership
         try:
@@ -99,7 +111,7 @@ class ShareRemoveFileView(APIView):
             return Response({"detail": "File not found."}, status=404)
 
         # Remove self if owner accidentally adds themself
-        shares_with_emails = [email for email in shares_with_emails if email != user.email]
+        shares_with_emails = [email for email in shares_with_emails if email != user.user.email]
 
         # Fetch all valid profile objects
         profiles = Profile.objects.filter(user__email__in=shares_with_emails)

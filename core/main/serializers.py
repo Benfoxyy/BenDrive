@@ -15,7 +15,7 @@ class StoredFileListSerializer(serializers.ModelSerializer):
     def get_file_size_in_mb(self, obj):
         return obj.file_size_in_mb
 
-class StoreFileSerializer(serializers.ModelSerializer):
+class FileSerializer(serializers.ModelSerializer):
     file_url = serializers.SerializerMethodField()
     file_size_in_mb = serializers.SerializerMethodField()
     
