@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --font-MorabbaLight : "Morabba Light";
+  --font-MorabbaBold : "Morabba Bold";
+  --font-MorabbaMedium : "Morabba Medium";
+
+}
+
+@layer base {
+
+  body {
+      @apply font-MorabbaLight overflow-auto 
+  }
+
+  @font-face {
+      font-family: "Morabba Light";
+      src: url("../fonts/Morabba/woff2/Morabba-Light.woff2");
+  }
+  @font-face {
+      font-family: "Morabba Medium";
+      src: url("../fonts/Morabba/woff2/Morabba-Medium.woff2");
+  }
+  @font-face {
+      font-family: "Morabba Bold";
+      src: url("../fonts/Morabba/woff2/Morabba-Bold.woff2");
+  }
+  
+}
