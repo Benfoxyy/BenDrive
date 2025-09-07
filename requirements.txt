@@ -5,6 +5,7 @@ django-filter
 djangorestframework-simplejwt
 drf-yasg[validation]
 django-cors-headers
+gunicorn
 psycopg==3.2.1
 psycopg-binary==3.2.1
 python-decouple==3.8
