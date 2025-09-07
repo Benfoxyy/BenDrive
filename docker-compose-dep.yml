@@ -15,7 +15,6 @@ services:
     restart: always
     environment:
       - DJANGO_SETTINGS_MODULE=core.settings.prod
-      - STATIC_ROOT=/app/staticfiles
       - MEDIA_ROOT=/app/media
     env_file:
       - ./envs/.env.sample
