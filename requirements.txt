@@ -4,10 +4,12 @@ markdown
 django-filter
 djangorestframework-simplejwt
 drf-yasg[validation]
+django-cors-headers
 psycopg==3.2.1
 psycopg-binary==3.2.1
 python-decouple==3.8
 Pillow==10.4.0
 django-minio-storage
-celery
-django-redis
+django-cleanup
+# celery
+# django-redis

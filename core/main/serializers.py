@@ -1,31 +1,36 @@
 from rest_framework import serializers
 from .models import FileModel
 
-class StoredFileListSerializer(serializers.ModelSerializer):
-    file_size_in_mb = serializers.SerializerMethodField()
-    file_url = serializers.SerializerMethodField()
-
-    class Meta:
-        model = FileModel
-        fields = ['id', 'file_url', 'file_size_in_mb']
-
-    def get_file_url(self, obj):
-        return obj.file_url
-
-    def get_file_size_in_mb(self, obj):
-        return obj.file_size_in_mb
 
 class FileSerializer(serializers.ModelSerializer):
     file_url = serializers.SerializerMethodField()
     file_size_in_mb = serializers.SerializerMethodField()
+    owner = serializers.StringRelatedField()
+    shares_with = serializers.SerializerMethodField(read_only=True)
     
     class Meta:
         model = FileModel
-        fields = ['owner', 'file', 'file_url', 'file_size_in_mb']
+        fields = ['id', 'owner', 'file', 'file_url', 'file_size_in_mb', 'shares_with']
         read_only_fields = ['owner', 'size']
         extra_kwargs = {
             'file': {'write_only': True},
         }
+        read_only_fields = ['id', 'file_url', 'file_size_in_mb']
+
+    def get_shares_with(self, obj):
+        return [profile.user.email for profile in obj.shares_with.all()]
+
+    def to_representation(self, instance):
+        """Customize output depending on who is requesting."""
+        rep = super().to_representation(instance)
+
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            # If the current user is in shares_with -> hide the field
+            if instance.shares_with.filter(user=request.user).exists():
+                rep.pop("shares_with", None)
+
+        return rep
 
     def create(self, validated_data):
         request = self.context['request']
@@ -43,27 +48,5 @@ class FileSerializer(serializers.ModelSerializer):
     def get_file_url(self, obj):
         return obj.file_url
     
-    def get_file_size_in_mb(self, obj):
-        return obj.file_size_in_mb
-
-
-class ShareFileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FileModel
-        fields = ['id', 'shares_with']
-
-
-class ShareFileListSerializer(serializers.ModelSerializer):
-    file_size_in_mb = serializers.SerializerMethodField()
-    file_url = serializers.SerializerMethodField()
-    owner = serializers.StringRelatedField()
-
-    class Meta:
-        model = FileModel
-        fields = ['id', 'owner', 'file_url', 'file_size_in_mb']
-
-    def get_file_url(self, obj):
-        return obj.file_url
-
     def get_file_size_in_mb(self, obj):
         return obj.file_size_in_mb

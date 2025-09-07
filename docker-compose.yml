@@ -37,9 +37,9 @@ services:
       dockerfile: ./Dockerfile
     container_name: backend
     command: >
-      sh -c "
-        python manage.py runserver 0.0.0.0:8000
-      "
+      sh -c "python3 manage.py makemigrations --noinput &&
+             python3 manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./core:/app
     ports:
@@ -47,25 +47,6 @@ services:
     restart: always
     depends_on:
       - db
-      - redis
       - minio
-
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-    restart: always
-
-  worker:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    command: celery -A core worker --loglevel=info
-    restart: always
-    volumes:
-      - ./core:/app
-    depends_on:
-      - db
-      - redis
-      - backend
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings.dev
