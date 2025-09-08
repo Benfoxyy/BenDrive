@@ -1,0 +1,33 @@
+name: BenDrive Deployment
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy-project:
+    name: Deploy Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH and deploy backend
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          timeout: 30m   # Increase to 30 minutes 
+          script: | 
+            set -e
+            cd /home/ubuntu/BenDrive
+            git pull
+            docker container prune -f
+            docker image prune -f
+            docker builder prune --all -f
+            sudo apt-get clean
+            sudo journalctl --vacuum-time=3d
+
+            docker compose -f docker-compose-prod.yml down
+            docker compose -f docker-compose-prod.yml up -d --build --remove-orphans
