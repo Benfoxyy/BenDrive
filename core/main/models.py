@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.conf import settings
 
 class FileModel(models.Model):
     owner = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE)
@@ -22,8 +23,7 @@ class FileModel(models.Model):
     
     @property
     def file_url(self):
-        from django.conf import settings
-        return f"{settings.MEDIA_URL}{self.file.name}"
+        return f"{settings.MINIO_STORAGE_MEDIA_URL}/{self.file.name}"
     
     @property
     def file_size_in_mb(self):
