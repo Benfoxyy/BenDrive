@@ -36,10 +36,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     
 class MeSerializer(serializers.ModelSerializer):
     storage_capacity_in_mb = serializers.SerializerMethodField()
+    email = serializers.ReadOnlyField(source='user.email')
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'storage_capacity_in_mb', 'created_date']
+        fields = ['id', 'email', 'storage_capacity_in_mb', 'created_date']
 
     def get_storage_capacity_in_mb(self, obj):
         return obj.storage_capacity_in_mb

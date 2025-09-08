@@ -49,7 +49,7 @@ class Profile(models.Model):
     user = models.OneToOneField(
         "User", on_delete=models.CASCADE, related_name="user_profile"
     )
-    storage_capacity = models.BigIntegerField(default=1073741824)
+    storage_capacity = models.BigIntegerField(default=209715200)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
