@@ -1,3 +1,4 @@
+from decouple import config
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
@@ -58,8 +59,9 @@ class Profile(models.Model):
 
     @property
     def storage_capacity_in_mb(self):
-        size_in_mb = self.storage_capacity / (1024 * 1024)
-        return f"{size_in_mb:.3f} MB"
+        size_left = config("MAX_STORAGE_CAPACITY", cast=int ,default=209715200) - self.storage_capacity
+        size_left_in_mb = size_left / (1024 * 1024)
+        return f"{size_left_in_mb:.3f} MB"
 
 
 @receiver(post_save, sender=User)
