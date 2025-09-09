@@ -13,6 +13,10 @@ class FileModel(models.Model):
     )
     file = models.FileField(upload_to="user_uploads/")
     size = models.PositiveBigIntegerField(blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+            ordering = ["-created_date"]
 
     def save(self, *args, **kwargs):
         if self.file and not self.size:
@@ -25,6 +29,10 @@ class FileModel(models.Model):
     @property
     def file_url(self):
         return f"{settings.MINIO_STORAGE_MEDIA_URL}/{self.file.name}"
+    
+    @property
+    def file_name(self):
+        return self.file.name
 
     @property
     def file_size_in_mb(self):

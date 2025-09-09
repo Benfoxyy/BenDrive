@@ -7,18 +7,21 @@ class FileSerializer(serializers.ModelSerializer):
     file_size_in_mb = serializers.SerializerMethodField()
     owner = serializers.StringRelatedField()
     shares_with = serializers.SerializerMethodField(read_only=True)
+    file_name = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = FileModel
-        fields = ["id", "owner", "file", "file_url", "file_size_in_mb", "shares_with"]
-        read_only_fields = ["owner", "size"]
+        fields = ["id", "owner", "file", "file_url", "file_name", "file_size_in_mb", "shares_with", "created_date"]
         extra_kwargs = {
             "file": {"write_only": True},
         }
-        read_only_fields = ["id", "file_url", "file_size_in_mb"]
+        read_only_fields = ["id", "file_url", "file_size_in_mb", "owner", "size", "created_date"]
 
     def get_shares_with(self, obj):
         return [profile.user.email for profile in obj.shares_with.all()]
+    
+    def get_file_name(self, obj):
+        return obj.file_name
 
     def to_representation(self, instance):
         """Customize output depending on who is requesting."""
