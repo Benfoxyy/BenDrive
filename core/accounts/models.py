@@ -61,7 +61,7 @@ class Profile(models.Model):
     def storage_capacity_in_mb(self):
         size_left = config("MAX_STORAGE_CAPACITY", cast=int ,default=209715200) - self.storage_capacity
         size_left_in_mb = size_left / (1024 * 1024)
-        return f"{size_left_in_mb:.3f} MB"
+        return float(f"{size_left_in_mb:.3f}")
 
 
 @receiver(post_save, sender=User)

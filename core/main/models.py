@@ -1,3 +1,4 @@
+from pathlib import Path
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
@@ -32,7 +33,8 @@ class FileModel(models.Model):
     
     @property
     def file_name(self):
-        return self.file.name
+        # Returns "WhatsApp_Image_2025-09-07_at_16.35.49_7547e753.jpg"
+        return Path(self.file.name).name if self.file and getattr(self.file, "name", None) else ""
 
     @property
     def file_size_in_mb(self):
