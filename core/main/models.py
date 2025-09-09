@@ -40,7 +40,7 @@ class FileModel(models.Model):
     def file_size_in_mb(self):
         size_in_mb = self.size / (1024 * 1024)
         return f"{size_in_mb:.3f} MB"
-
+ 
 
 @receiver(post_delete, sender=FileModel)
 def delete_file_from_storage(sender, instance, **kwargs):
