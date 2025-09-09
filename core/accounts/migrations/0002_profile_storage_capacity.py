@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0001_initial'),
+        ("accounts", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='storage_capacity',
+            model_name="profile",
+            name="storage_capacity",
             field=models.IntegerField(default=2000),
         ),
     ]

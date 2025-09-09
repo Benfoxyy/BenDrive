@@ -6,14 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0004_alter_profile_storage_capacity'),
-        ('main', '0002_alter_filemodel_size'),
+        ("accounts", "0004_alter_profile_storage_capacity"),
+        ("main", "0002_alter_filemodel_size"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='filemodel',
-            name='shares_with',
-            field=models.ManyToManyField(blank=True, related_name='shared_files', to='accounts.profile'),
+            model_name="filemodel",
+            name="shares_with",
+            field=models.ManyToManyField(
+                blank=True, related_name="shared_files", to="accounts.profile"
+            ),
         ),
     ]

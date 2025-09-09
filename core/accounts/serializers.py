@@ -14,9 +14,7 @@ class SignUpApiSerializers(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs.get("password") != attrs.get("password_conf"):
-            raise serializers.ValidationError(
-                {"password": "Passwords do not match"}
-            )
+            raise serializers.ValidationError({"password": "Passwords do not match"})
         try:
             validate_password(attrs.get("password"))
         except exceptions.ValidationError as e:
@@ -33,14 +31,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         validated_data = super().validate(attrs)
         validated_data.pop("refresh")
         return validated_data
-    
+
+
 class MeSerializer(serializers.ModelSerializer):
     storage_capacity_in_mb = serializers.SerializerMethodField()
-    email = serializers.ReadOnlyField(source='user.email')
+    email = serializers.ReadOnlyField(source="user.email")
 
     class Meta:
         model = Profile
-        fields = ['id', 'email', 'storage_capacity_in_mb', 'created_date']
+        fields = ["id", "email", "storage_capacity_in_mb", "created_date"]
 
     def get_storage_capacity_in_mb(self, obj):
         return obj.storage_capacity_in_mb

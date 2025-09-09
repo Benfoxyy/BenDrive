@@ -7,15 +7,15 @@ class FileSerializer(serializers.ModelSerializer):
     file_size_in_mb = serializers.SerializerMethodField()
     owner = serializers.StringRelatedField()
     shares_with = serializers.SerializerMethodField(read_only=True)
-    
+
     class Meta:
         model = FileModel
-        fields = ['id', 'owner', 'file', 'file_url', 'file_size_in_mb', 'shares_with']
-        read_only_fields = ['owner', 'size']
+        fields = ["id", "owner", "file", "file_url", "file_size_in_mb", "shares_with"]
+        read_only_fields = ["owner", "size"]
         extra_kwargs = {
-            'file': {'write_only': True},
+            "file": {"write_only": True},
         }
-        read_only_fields = ['id', 'file_url', 'file_size_in_mb']
+        read_only_fields = ["id", "file_url", "file_size_in_mb"]
 
     def get_shares_with(self, obj):
         return [profile.user.email for profile in obj.shares_with.all()]
@@ -33,20 +33,22 @@ class FileSerializer(serializers.ModelSerializer):
         return rep
 
     def create(self, validated_data):
-        request = self.context['request']
+        request = self.context["request"]
         user = request.user.user_profile
-        file = validated_data['file']
+        file = validated_data["file"]
         if file.size > user.storage_capacity:
             need = file.size - user.storage_capacity
-            raise serializers.ValidationError({
-            'size': "You don't have enough space for storing this data.",
-            'detail': f"Need more extra {need / (1024 * 1024):.3f} MB space to continue."
-            })
-        validated_data['owner'] = user
+            raise serializers.ValidationError(
+                {
+                    "size": "You don't have enough space for storing this data.",
+                    "detail": f"Need more extra {need / (1024 * 1024):.3f} MB space to continue.",
+                }
+            )
+        validated_data["owner"] = user
         return super().create(validated_data)
-    
+
     def get_file_url(self, obj):
         return obj.file_url
-    
+
     def get_file_size_in_mb(self, obj):
         return obj.file_size_in_mb

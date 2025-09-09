@@ -55,11 +55,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.email
-    
+
     @property
     def storage_capacity_in_mb(self):
         size_in_mb = self.storage_capacity / (1024 * 1024)
-        return f'{size_in_mb:.3f} MB'
+        return f"{size_in_mb:.3f} MB"
 
 
 @receiver(post_save, sender=User)
@@ -67,12 +67,14 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
+
 @receiver(post_save, sender=FileModel)
 def reduce_profile_storage(sender, instance, created, **kwargs):
     if created:
         profile = instance.owner
         profile.storage_capacity -= instance.size
         profile.save()
+
 
 @receiver(post_delete, sender=FileModel)
 def increase_profile_storage(sender, instance, **kwargs):
