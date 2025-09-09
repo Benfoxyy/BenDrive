@@ -5,6 +5,14 @@
   --font-MorabbaBold : "Morabba Bold";
   --font-MorabbaMedium : "Morabba Medium";
 
+  --color-blue-normal : #F3F7FE;
+
+}
+
+@layer utilities {
+  .box-shadow {
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.25);
+  }
 }
 
 @layer base {

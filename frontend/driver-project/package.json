@@ -16,6 +16,8 @@
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",
     "react-router-dom": "^7.7.1",
+    "swal": "^0.1.0",
+    "sweetalert": "^2.1.2",
     "tailwindcss": "^4.1.11",
     "yup": "^1.7.0"
   },
