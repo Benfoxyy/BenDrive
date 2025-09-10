@@ -34,7 +34,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: dockerfiles/django/Dockerfile
     container_name: backend
     command: >
       sh -c "python3 manage.py makemigrations --noinput &&

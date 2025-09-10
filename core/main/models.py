@@ -15,9 +15,9 @@ class FileModel(models.Model):
     file = models.FileField(upload_to="user_uploads/")
     size = models.PositiveBigIntegerField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
-            ordering = ["-created_date"]
+        ordering = ["-created_date"]
 
     def save(self, *args, **kwargs):
         if self.file and not self.size:
@@ -30,17 +30,21 @@ class FileModel(models.Model):
     @property
     def file_url(self):
         return f"{settings.MINIO_STORAGE_MEDIA_URL}/{self.file.name}"
-    
+
     @property
     def file_name(self):
         # Returns "WhatsApp_Image_2025-09-07_at_16.35.49_7547e753.jpg"
-        return Path(self.file.name).name if self.file and getattr(self.file, "name", None) else ""
+        return (
+            Path(self.file.name).name
+            if self.file and getattr(self.file, "name", None)
+            else ""
+        )
 
     @property
     def file_size_in_mb(self):
         size_in_mb = self.size / (1024 * 1024)
         return f"{size_in_mb:.3f} MB"
- 
+
 
 @receiver(post_delete, sender=FileModel)
 def delete_file_from_storage(sender, instance, **kwargs):

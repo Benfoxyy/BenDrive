@@ -11,15 +11,31 @@ class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FileModel
-        fields = ["id", "owner", "file", "file_url", "file_name", "file_size_in_mb", "shares_with", "created_date"]
+        fields = [
+            "id",
+            "owner",
+            "file",
+            "file_url",
+            "file_name",
+            "file_size_in_mb",
+            "shares_with",
+            "created_date",
+        ]
         extra_kwargs = {
             "file": {"write_only": True},
         }
-        read_only_fields = ["id", "file_url", "file_size_in_mb", "owner", "size", "created_date"]
+        read_only_fields = [
+            "id",
+            "file_url",
+            "file_size_in_mb",
+            "owner",
+            "size",
+            "created_date",
+        ]
 
     def get_shares_with(self, obj):
         return [profile.user.email for profile in obj.shares_with.all()]
-    
+
     def get_file_name(self, obj):
         return obj.file_name
 

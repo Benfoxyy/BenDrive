@@ -42,7 +42,7 @@ class StoreFileView(generics.CreateAPIView):
     queryset = FileModel.objects.all()
     permission_classes = [IsAuthenticated]
 
- 
+
 class DeleteFileView(generics.DestroyAPIView):
     queryset = FileModel.objects.all()
     permission_classes = [IsAuthenticated]
