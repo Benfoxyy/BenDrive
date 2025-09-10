@@ -2,6 +2,8 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from accounts.models import Profile
 from django.db.models import Q
 from .serializers import FileSerializer
@@ -12,6 +14,8 @@ class FileListView(generics.ListAPIView):
     serializer_class = FileSerializer
     queryset = FileModel.objects.all()
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ["file"]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -24,6 +28,8 @@ class MyDriveListView(generics.ListAPIView):
     serializer_class = FileSerializer
     queryset = FileModel.objects.all()
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ["file"]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -45,6 +51,8 @@ class DeleteFileView(generics.DestroyAPIView):
 class ShareListFileView(generics.ListAPIView):
     serializer_class = FileSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ["file"]
 
     def get_queryset(self):
         user = self.request.user
