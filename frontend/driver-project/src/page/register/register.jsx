@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
@@ -7,20 +7,22 @@ import swal from "sweetalert";
 import { useNavigate } from 'react-router-dom';
 import authContext from '../../context/authContext';
 import { Link } from 'react-router-dom';
+
 const schema = yup.object().shape({
   email: yup.string()
-    .required("این فیلد الزامی است") 
-    .email("ایمیل معتبر وارد کنید"),
+    .required("This field is required") 
+    .email("Enter a valid email"),
 
   password: yup.string()
-    .required("این فیلد الزامی است")
-    .min(6, "پسورد باید حداقل 6 کاراکتر باشد"),
+    .required("This field is required")
+    .min(6, "Password must be at least 6 characters"),
 
   confirmpassword: yup.string()
-    .required("این فیلد الزامی است")
-    .min(6, "پسورد باید حداقل 6 کاراکتر باشد")
-    .oneOf([yup.ref("password")], "پسورد مطابقت ندارد"),
+    .required("This field is required")
+    .min(6, "Password must be at least 6 characters")
+    .oneOf([yup.ref("password")], "Passwords do not match"),
 });
+
 
 function Register() {
   const navigate = useNavigate();
@@ -45,16 +47,16 @@ function Register() {
     .then(res => {
       if(res.status === 201) {
         swal({
-          title: "با موفقیت ثبت نام شدید",
-          buttons: "رفتن به صفحه ",
+          title: " Registered successfully",
+          buttons: "Go to login",
           icon: "success",
         }).then(() => {
           navigate("/login");
         })
       } else if(res.status === 400) {
         swal({
-          title: "با این اطلاعات قبلا ثبت نام انجام شده",
-          buttons: "باشه",
+          title: "An account with this information already exists",
+          buttons: "OK",
           icon: "error",
         })
       }
@@ -69,14 +71,14 @@ function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <form onSubmit={handleSubmit(onFormSubmit)} className="w-full max-w-md bg-white rounded-lg font-MorabbaBold shadow-md p-10 space-y-6">
-        <h2 className="text-2xl font-semibold text-gray-800 text-center">ثبت نام</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 text-center">Register</h2>
 
         <div className="flex flex-col">
-          <label htmlFor="email" className="mb-2 text-sm text-gray-700">ایمیل</label>
+          <label htmlFor="email" className="mb-2 text-sm text-gray-700">Email</label>
           <input
             type="email"
             id="email"
-            placeholder="email"
+            placeholder="Email"
             className="px-4 py-2 rounded bg-white text-black placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             {...register("email")}
           />
@@ -84,11 +86,11 @@ function Register() {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="password" className="mb-2 text-sm text-gray-700">رمز عبور</label>
+          <label htmlFor="password" className="mb-2 text-sm text-gray-700">Password</label>
           <input
             type="password"
             id="password"
-            placeholder="password"
+            placeholder="Password"
             className="px-4 py-2 rounded bg-white text-black placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             {...register("password")}
           />
@@ -96,11 +98,11 @@ function Register() {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="confirmpassword" className="mb-2 text-sm text-gray-700">تکرار رمز عبور</label>
+          <label htmlFor="confirmpassword" className="mb-2 text-sm text-gray-700">Confirm Password</label>
           <input
             type="password"
             id="confirmpassword"
-            placeholder="confirmpassword"
+            placeholder="Confirm Password"
             className="px-4 py-2 rounded bg-white text-black placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             {...register("confirmpassword")}
           />
@@ -111,12 +113,14 @@ function Register() {
           type="submit"
           className="w-full cursor-pointer bg-black text-white font-semibold py-2 rounded hover:bg-gray-800 transition duration-200"
         >
-          ثبت نام
+          Register
         </button>
         <div className='text-center mt-4'>
           <Link to={"/login"}>
-                <span className='font-MorabbaBold'>حساب کاربری دارید؟  <span className='text-blue-500'>لاگین کنید</span></span>
-            </Link>
+            <span className='font-MorabbaBold'>
+              Already have an account? <span className='text-blue-500'>Login here</span>
+            </span>
+          </Link>
         </div>
       </form>
     </div>

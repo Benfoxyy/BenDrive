@@ -3,9 +3,18 @@ import MainboxItem from '../../components/MainBoxItem/MainboxItem';
 import UploadModal from '../../components/UploadModal/UploadModal';
 import Header from '../../components/Header/header';
 
+import { useContext } from 'react';
+import authContext from '../../context/authContext';
+
 function Myshare() {
   const [myShareDriveList, setMyShareDriveList] = useState([]);
   const [isShowUploader, setIsShowUploader] = useState(false);
+
+  const AuthContext = useContext(authContext)
+
+
+      
+      console.log("email  ===>" , AuthContext.userInfos?.email );
 
   const listSharesApi = async () => {
     try {
@@ -66,7 +75,9 @@ function Myshare() {
 
         <div className="grid grid-cols-4 mt-8 gap-5">
           {myShareDriveList.map(item => (
-            <MainboxItem key={item.id} item={item} />
+            
+            
+            <MainboxItem myShareDriveList={myShareDriveList} key={item.id} item={item} />
           ))}
         </div>
       </main>

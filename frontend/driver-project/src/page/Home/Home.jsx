@@ -4,34 +4,32 @@ import MainboxItem from '../../components/MainBoxItem/MainboxItem';
 import UploadModal from '../../components/UploadModal/UploadModal';
 
 function Home() {
-  const [allItems , setAllItems ] = useState([])  
+  const [allItems , setAllItems ] = useState([]);  
+  const [findItems , setFindItems ] = useState([]);  
+  const [isSearching, setIsSearching] = useState(false);
 
-  //? getAllItmesApi
+  //! getAllItmesApi
   const getAllItmesApi = async () => {
-    const res = await fetch(`https://api.benben.pics/file/list/` , {
+    const res = await fetch(`https://api.benben.pics/file/list`, {
       headers  : {
         Authorization : `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
       }
-    })
-    const data = await res.json() 
-    setAllItems(data)
-    console.log(allItems);
-    
-    console.log(data);
-    
-  }
+    });
+    const data = await res.json(); 
+    setAllItems(data);
+  };
 
   useEffect(() => {
-        getAllItmesApi()
-  } , [])
+    getAllItmesApi();
+  }, []);
 
   const [isShowUploader, setIsShowUploader] = useState(false);
-
   const toggleUploader = () => setIsShowUploader(v => !v);
 
   return (
     <div className="ml-8">
-      <Header  />
+      {/* 👇 اینجا setter درست پاس داده میشه */}
+      <Header FindallItems={setFindItems} setIsSearching={setIsSearching}/>
 
       <main className="max-w-[1440px] mt-9 font-MorabbaBold text-2xl">
         <div className="header-box flex justify-between items-center">
@@ -52,9 +50,21 @@ function Home() {
         </div>
 
         <div className="grid grid-cols-4 mt-8 gap-5">
-          {allItems.map(item => (
-            <MainboxItem    refreshItems={getAllItmesApi} item={item}/>
-          ))}
+          {isSearching ? (
+            findItems.length > 0 ? (
+              findItems.map(item => (
+                <MainboxItem key={item.id} refreshItems={getAllItmesApi} item={item}/>
+              ))
+            ) : (
+              <p className="col-span-4 text-center text-gray-500">
+                Not Found 😢
+              </p>
+            )
+          ) : (
+            allItems.map(item => (
+              <MainboxItem key={item.id} refreshItems={getAllItmesApi} item={item}/>
+            ))
+          )}
         </div>
       </main>
 

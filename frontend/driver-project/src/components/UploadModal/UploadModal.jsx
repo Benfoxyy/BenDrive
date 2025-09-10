@@ -1,7 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import UploadStatusBox from "../UploadStatusBox/UploadStatusBox"
-
+import authContext from '../../context/authContext';
+import { useContext } from 'react';
 export default function UploadModal({ onClose , refreshItems }) {
+ 
+
+  const AuthContext = useContext(authContext)
+
   const fileInputRef = useRef(null);
   const xhrRef = useRef(null);
 
@@ -42,7 +47,31 @@ export default function UploadModal({ onClose , refreshItems }) {
       );
       setStatus('success');
       setMessage(res?.message || 'Uploaded successfully');
+
       refreshItems()
+
+
+try {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user?.token) {
+    const res = await fetch("https://api.benben.pics/accounts/me/", {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
+    if (res.ok) {
+      const data = await res.json();
+
+      localStorage.setItem("user", JSON.stringify({ token: user.token, ...data }));
+
+      if (typeof AuthContext?.login === "function") {
+        await AuthContext.login(user.token);
+      }
+    }
+  }
+} catch (e) {
+  console.error("refresh after upload failed:", e);
+}
+
+
     } 
     catch (err) {
       if (err?.name === 'AbortError') {

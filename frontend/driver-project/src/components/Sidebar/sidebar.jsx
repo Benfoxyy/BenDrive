@@ -4,7 +4,14 @@ import authContext from '../../context/authContext';
 import { Link } from 'react-router-dom';
 
 function Sadbar() {
+ 
+
   const AuthContext = useContext(authContext)
+
+  function handleLogout () {
+    AuthContext.logout()
+  }
+
 
   return (
     <aside className="min-h-screen  fixed left-0 top-0 bottom-0 w-[260px] bg-blue-normal  flex flex-col items-center pt-3">
@@ -70,21 +77,21 @@ function Sadbar() {
 
         <li className="w-full flex flex-col items-center mt-0">
   <div className="w-[145px] h-2 bg-white border rounded overflow-hidden">
-    <div
+    <li
       className="h-full bg-[#1A5EC1] transition-all duration-500"
       style={{
         width: `${Math.min(
-          (AuthContext.userInfos?.storage_capacity_in_mb / 300) * 100,
+          (AuthContext.userInfos?.storage_capacity_in_mb / 200) * 100,
           100
         )}%`,
       }}
-    ></div>
+    ></li>
   </div>
   <p
     style={{ letterSpacing: "0.8px" }}
     className="text-xs font-MorabbaMedium mt-2"
   >
-    {AuthContext.userInfos?.storage_capacity_in_mb || 0} mb of 300 mb used
+    {AuthContext.userInfos?.storage_capacity_in_mb || 0} MB of 200 MB used
   </p>
 </li>
 
@@ -97,6 +104,7 @@ function Sadbar() {
                 <img src="./images/user-profile.png" alt="" />
             </div>
             <span>{AuthContext.userInfos?.email}</span>
+            <button  className='cursor-pointer' onClick={handleLogout}>Logout</button>
         </a>
       </div>
     </aside>

@@ -84,7 +84,7 @@ function App() {
     checkAuth();
   }, []);
 
-  if (loading) return <p>در حال بارگذاری...</p>;
+  if (loading) return <p className='text-black text-xl'>loading</p>;
 
   return (
     <AuthContext.Provider value={{
