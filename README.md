@@ -26,7 +26,7 @@ BenDrive provides a seamless and efficient way to manage your files online. Here
 ## 🛠️ Tech Stack
 
 - **Backend:** Designed and implemented by [Benyamin](https://github.com/Benfoxyy)  
-- **Frontend:** Developed by [Benyamin](https://github.com/Amir-Sharafi-86)  
+- **Frontend:** Developed by [Sharafi](https://github.com/Amir-Sharafi-86)  
 - **UI/UX:** Crafted with a focus on clarity, speed, and usability
 
 ---
